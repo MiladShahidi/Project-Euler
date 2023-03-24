@@ -1,3 +1,6 @@
+# This is a simpler solution for this simple case
+# A more general alternative approach is implemented for problems 82 nad 83
+
 import numpy as np
 from functools import lru_cache
 
@@ -9,20 +12,19 @@ from functools import lru_cache
 class Matrix:
     def __init__(self, elements):
         self.matrix = elements
-        self.curr_col = self.matrix.shape[1] - 1
-        self.curr_row = self.matrix.shape[0] - 1
+        self.max_col = self.matrix.shape[1] - 1
+        self.max_row = self.matrix.shape[0] - 1
 
     # The decorator caches return values of this function
     # The algorithm is not optimal and calculates the same cost multiple times
     # But by caching we can at least speed it up in practice
     @lru_cache(maxsize=None)
     def path_and_cost(self, curr_row, curr_col):
-        print(curr_col, curr_row, end='\r')
-        if curr_col == self.curr_col:
-            path = 'D' * (self.curr_row - curr_row)
+        if curr_col == self.max_col:
+            path = 'D' * (self.max_row - curr_row)
             cost = np.sum(self.matrix[curr_row:, curr_col:])
-        elif curr_row == self.curr_row:
-            path = 'R' * (self.curr_col - curr_col)
+        elif curr_row == self.max_row:
+            path = 'R' * (self.max_col - curr_col)
             cost = np.sum(self.matrix[curr_row:, curr_col:])
         else:
             path_r, cost_r = self.path_and_cost(curr_row, curr_col+1)
