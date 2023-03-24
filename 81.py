@@ -2,29 +2,33 @@ import numpy as np
 from functools import lru_cache
 
 
+# The reason I implement this in a class has to do with the caching decorator below
+# The decorator requires all parameters of the decorated function to be hashable
+# And since np.array is not hashable I cannot pass the matrix to the function
+# You could either make the matrix a global variable or use a class to make it accessible to the function
 class Matrix:
     def __init__(self, elements):
         self.matrix = elements
-        self.max_x = self.matrix.shape[1] - 1
-        self.max_y = self.matrix.shape[0] - 1
+        self.curr_col = self.matrix.shape[1] - 1
+        self.curr_row = self.matrix.shape[0] - 1
 
     # The decorator caches return values of this function
     # The algorithm is not optimal and calculates the same cost multiple times
     # But by caching we can at least speed it up in practice
     @lru_cache(maxsize=None)
-    def path_and_cost(self, x, y):
-        print(x, y, end='\r')
-        if x == self.max_x:
-            path = 'D' * (self.max_y - y)
-            cost = np.sum(self.matrix[y:, x:])
-        elif y == self.max_y:
-            path = 'R' * (self.max_x - x)
-            cost = np.sum(self.matrix[y:, x:])
+    def path_and_cost(self, curr_row, curr_col):
+        print(curr_col, curr_row, end='\r')
+        if curr_col == self.curr_col:
+            path = 'D' * (self.curr_row - curr_row)
+            cost = np.sum(self.matrix[curr_row:, curr_col:])
+        elif curr_row == self.curr_row:
+            path = 'R' * (self.curr_col - curr_col)
+            cost = np.sum(self.matrix[curr_row:, curr_col:])
         else:
-            path_r, cost_r = self.path_and_cost(x+1, y)
-            path_d, cost_d = self.path_and_cost(x, y+1)
+            path_r, cost_r = self.path_and_cost(curr_row, curr_col+1)
+            path_d, cost_d = self.path_and_cost(curr_row+1, curr_col)
             path = 'R' + path_r if cost_r <= cost_d else 'D' + path_d
-            cost = self.matrix[y, x] + min(cost_r, cost_d)
+            cost = self.matrix[curr_row, curr_col] + min(cost_r, cost_d)
 
         return path, cost
 
