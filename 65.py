@@ -17,4 +17,6 @@ if __name__ == '__main__':
         frac = f(c=a, fraction=frac)
 
     numerator = 2 * frac[1] + frac[0]
-    print(sum([int(x) for x in str(numerator)]))
+
+    print(f'{K+1}-th term is: {frac[0]} / {frac[1]}')
+    print('Answer:', sum([int(x) for x in str(numerator)]))

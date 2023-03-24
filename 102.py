@@ -17,4 +17,4 @@ if __name__ == '__main__':
             tr = np.array([int(x) for x in line.split(',')]).reshape(3, 2).transpose()
             positives += int(contains_origin(tr))
 
-    print(positives)
+    print('Answer:', positives)
